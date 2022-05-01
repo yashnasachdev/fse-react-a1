@@ -2,10 +2,8 @@ import {createUser} from "../services/users-service";
 import {
     createTuit,
     deleteTuit,
-    deleteTuitByUserId,
     findTuitById,
-    findAllTuits,
-    findTuitByUser
+    findAllTuits
 } from "../services/tuits-service"
 import {deleteUsersByUsername} from "./services";
 
@@ -27,7 +25,7 @@ describe('can create tuit with REST API', () => {
     });
 
     afterEach(async () => {
-        await deleteTuit(tuit._id);
+        await deleteTuit(tuit.id);
         const response = await deleteUsersByUsername(ripley.username);
     });
 
@@ -68,7 +66,7 @@ describe('can delete tuit wtih REST API', () => {
      });
 
      afterEach(async () => {
-         await deleteTuit(tuit._id);
+         await deleteTuit(tuit.id);
          const response = await deleteUsersByUsername(ripley.username);
      });
 
@@ -79,7 +77,7 @@ describe('can delete tuit wtih REST API', () => {
      });
 
      test('can delete tuit with REST API by userid', async () => {
-         const status = await deleteTuitByUserId(userId);
+         const status = await deleteTuit(tuit.id);
 
          expect(status.deletedCount).toBeGreaterThanOrEqual(1);
      });
@@ -108,14 +106,14 @@ describe('can retrieve a tuit by their primary key with REST API', () => {
       });
 
       afterEach(async () => {
-          await deleteTuit(tuit._id);
+          await deleteTuit(tuit.id);
           await deleteUsersByUsername(ripley.username);
       });
 
       test('can retrieve a tuit by their primary key with REST API', async () => {
-          const tuitResponse = await findTuitById(tuit._id);
+          const tuitResponse = await findTuitById(tuit.id);
 
-          expect(tuitResponse._id).toEqual(tuit._id);
+          expect(tuitResponse.id).toEqual(tuit.id);
           expect(tuitResponse.tuit).toEqual(tuitText);
           expect(tuitResponse.postedOn).toEqual("2022-03-17T11:48:48.360Z");
           expect(tuitResponse.postedBy).toEqual(userId);
@@ -145,7 +143,7 @@ describe('can retrieve all tuits with REST API', () => {
                   postedBy: newUser,
               };
               tuit = await createTuit(userId, newTuit);
-              tuitIds.push(tuit._id);
+              tuitIds.push(tuit.id);
           }
       });
 
